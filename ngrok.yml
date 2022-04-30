@@ -1,0 +1,16 @@
+version: "2"
+authtoken: 27FqqhWBmkO5FVGkkaGv7L16bxb_5Gy9HaLwSsqbcN3Ax3LAx
+
+tunnels:
+  kuboard:
+    addr: 172.17.25.182:30080
+    proto: http
+    host_header: localhost
+  kiali:
+    addr: 172.17.25.182:31623
+    proto: http
+    host_header: localhost
+  wa-gateway2:
+    addr: 172.17.25.182:30533
+    proto: http
+    host_header: localhost

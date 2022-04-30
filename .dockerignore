@@ -1,0 +1,12 @@
+**/.git
+**/.DS_Store
+*.log
+Dockerfile*
+docker-compose*
+.dockerignore
+.git
+.gitignore
+.vscode
+./logs/*.log
+go_build_fasthttpcs
+

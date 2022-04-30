@@ -1,0 +1,26 @@
+version: "3"
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kevin234kevin999/gatewaycs:2.11
+    stdin_open: true
+    tty: true
+    environment:
+      forwardbackend: "http://www.google.com"
+    ports:
+      - "8090:8080"
+#    volumes:
+#      - ./logs:/logs
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kevin234kevin999/fasthttpserver:1.0.0
+    stdin_open: true
+    tty: true
+    ports:
+      - "8091:8080"
+#    volumes:
+#      - ./logs:/logs
