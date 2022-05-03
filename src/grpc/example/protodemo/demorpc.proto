@@ -1,0 +1,36 @@
+syntax = "proto3"; // 指定proto版本
+
+// 指定golang包名
+option go_package = "pb/proto_demo";
+
+// 定义Hello服务
+service Hello {
+  // 定义SayHello方法
+  rpc SayHello(HelloRequest) returns (HelloResponse) {}
+  rpc SayHi(HiRequest) returns (HiResponse) {}
+}
+
+// HelloRequest 请求结构
+message HelloRequest {
+  string name = 1;
+}
+
+// HelloResponse 响应结构
+message HelloResponse {
+  string message = 1;
+}
+
+// HiRequest 请求结构
+message HiRequest {
+  string name = 1;
+  string school = 2;
+  int32 age = 3;
+  int32 grade = 4;
+  int32 status = 5;
+}
+
+// HiResponse 响应结构
+message HiResponse {
+  string message = 1;
+  int32 status = 2;
+}

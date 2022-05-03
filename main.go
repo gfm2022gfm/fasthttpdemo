@@ -1,6 +1,7 @@
 package main
 
 import (
+	"example"
 	"flag"
 	"fmt"
 	"github.com/buaazp/fasthttprouter"
@@ -8,10 +9,13 @@ import (
 	"github.com/valyala/fasthttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/grpclog"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -35,13 +39,57 @@ func main() {
 
 	router.GET("/f3b/:id", f3b)
 	router.GET("/add/:id", add)
+	router.GET("/say/:id", say)
 
 	//client
 	//doRequest()
 
+	go rpcClientInit()
+	defer connrpc.Close()
+
 	if err := fasthttp.ListenAndServe(*addr, router.Handler); err != nil {
 		sugarLogger.Fatalf("Error in ListenAndServe: %v", err)
 	}
+}
+
+func say(ctx *fasthttp.RequestCtx) {
+	//c := proto_demo.NewHelloClient(conn)
+
+	req := &example.HelloRequest{Name: "grpc"}
+	res, err := c.SayHello(ctx, req)
+	if err != nil {
+		sugarLogger.Fatalf("fatal : %v", err.Error())
+		//grpclog.Fatalln(err)
+	}
+
+	fmt.Println(res.Message)
+	sugarLogger.Info(res.Message)
+
+	id, _ := strconv.Atoi((ctx.UserValue("id")).(string))
+	req2 := &example.HiRequest{Name: "grpc", Grade: 3, Age: int32(id), Status: 2, School: "zhuhai"}
+	res2, err := c.SayHi(ctx, req2)
+	if err != nil {
+		sugarLogger.Fatalf("fatal : %v", err.Error())
+		//grpclog.Fatalln(err)
+	}
+
+	sugarLogger.Info(res2.Message)
+	//fmt.Println(res2.Message)
+	fmt.Fprintf(ctx, "grpc id : %s!\n", ctx.UserValue("id"))
+}
+
+var c example.HelloClient
+var connrpc *grpc.ClientConn
+
+func rpcClientInit() {
+	Address := fmt.Sprintf("%v:8899", os.Getenv("grpcip"))
+	connrpc, err := grpc.Dial(Address, grpc.WithInsecure())
+	if err != nil {
+		grpclog.Fatalln(err)
+	}
+
+	c = example.NewHelloClient(connrpc)
+
 }
 
 func doRequest() string {
