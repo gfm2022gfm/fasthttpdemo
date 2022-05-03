@@ -1,7 +1,6 @@
 package main
 
 import (
-	"example"
 	"flag"
 	"fmt"
 	"github.com/buaazp/fasthttprouter"
@@ -55,7 +54,7 @@ func main() {
 func say(ctx *fasthttp.RequestCtx) {
 	//c := proto_demo.NewHelloClient(conn)
 
-	req := &example.HelloRequest{Name: "grpc"}
+	req := &HelloRequest{Name: "grpc"}
 	res, err := c.SayHello(ctx, req)
 	if err != nil {
 		sugarLogger.Fatalf("fatal : %v", err.Error())
@@ -66,7 +65,7 @@ func say(ctx *fasthttp.RequestCtx) {
 	sugarLogger.Info(res.Message)
 
 	id, _ := strconv.Atoi((ctx.UserValue("id")).(string))
-	req2 := &example.HiRequest{Name: "grpc", Grade: 3, Age: int32(id), Status: 2, School: "zhuhai"}
+	req2 := &HiRequest{Name: "grpc", Grade: 3, Age: int32(id), Status: 2, School: "zhuhai"}
 	res2, err := c.SayHi(ctx, req2)
 	if err != nil {
 		sugarLogger.Fatalf("fatal : %v", err.Error())
@@ -78,7 +77,7 @@ func say(ctx *fasthttp.RequestCtx) {
 	fmt.Fprintf(ctx, "grpc id : %s!\n", ctx.UserValue("id"))
 }
 
-var c example.HelloClient
+var c HelloClient
 var connrpc *grpc.ClientConn
 
 func rpcClientInit() {
@@ -88,7 +87,7 @@ func rpcClientInit() {
 		grpclog.Fatalln(err)
 	}
 
-	c = example.NewHelloClient(connrpc)
+	c = NewHelloClient(connrpc)
 
 }
 
