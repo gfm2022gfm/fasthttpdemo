@@ -30,10 +30,11 @@ func main() {
 	router.GET("/", requestHandler)
 	router.GET("/index2", Index)
 	router.GET("/hello/:name", Hello)
-	router.GET("/forward2backednok", forward2backednok)
+	router.GET("/forward2backednok", forward2backednok) //delete
 	router.GET("/f2b", f2b)
 
-	router.GET("/f3b", f3b)
+	router.GET("/f3b/:id", f3b)
+	router.GET("/add/:id", add)
 
 	//client
 	//doRequest()
@@ -44,7 +45,7 @@ func main() {
 }
 
 func doRequest() string {
-	url := os.Getenv("forwardbackend")
+	url := fmt.Sprintf("%v:8091", os.Getenv("forwardbackend"))
 	//url := "http://www.google.com"
 	req := fasthttp.AcquireRequest()
 	resp := fasthttp.AcquireResponse()
@@ -66,6 +67,11 @@ func Hello(ctx *fasthttp.RequestCtx) {
 	fmt.Fprintf(ctx, "hello, %s!\n", ctx.UserValue("name"))
 }
 
+func add(ctx *fasthttp.RequestCtx) {
+	sugarLogger.Info("id= ", ctx.UserValue("id"))
+	fmt.Fprintf(ctx, "id= %s\n", ctx.UserValue("id"))
+}
+
 func forward2backednok(ctx *fasthttp.RequestCtx) {
 	fmt.Fprintf(ctx, doRequest())
 }
@@ -77,7 +83,8 @@ func f3b(ctx *fasthttp.RequestCtx) {
 		},
 	}
 
-	url := os.Getenv("forwardbackend")
+	url := fmt.Sprintf("%v:8091/add/:%v", os.Getenv("forwardbackend"), ctx.UserValue("id")) // os.Getenv("forwardbackend") + "/" + string(ctx.UserValue("name"))
+
 	resp, err := client.Get(url)
 	if err != nil {
 		fmt.Println(err)
@@ -97,7 +104,7 @@ var lock sync.RWMutex
 
 func f2b(ctx *fasthttp.RequestCtx) {
 
-	url := os.Getenv("forwardbackend")
+	url := fmt.Sprintf("%v:8091", os.Getenv("forwardbackend"))
 	sugarLogger.Info("f2b env: %V", zap.String("env:%v", url))
 
 	status, resp, err := fasthttp.Get(nil, url)

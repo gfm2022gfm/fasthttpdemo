@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: kevin234kevin999/gatewaycs:2.11
+    image: kevin234kevin999/gatewaycs:2.15
     stdin_open: true
     tty: true
     environment:
